@@ -20,8 +20,7 @@
 #include <unistd.h>
 
 // Macro: expansion to string
-#define INT_TO_STR(x) #x
-#define STR(x) INT_TO_STR(x)
+#define STR(x) #x
 
 // Macro: milliseconds sleep
 #define msleep(_MILLIS_) usleep(_MILLIS_ * 1000)
