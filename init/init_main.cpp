@@ -81,13 +81,13 @@ int main(int argc, char** __attribute__((unused)) argv)
 
         // Retrieve keycheck result
         keycheckStatus = system_exec_kill(keycheck_pid, KEYCHECK_TIMEOUT);
-        recoveryBoot = (keycheckStatus == KEYCHECK_RECOVERY_BOOT_ONLY ||
-                keycheckStatus == KEYCHECK_RECOVERY_FOTA_BOOT);
+        recoveryBoot = (keycheckStatus == KEYCHECK_RECOVERY_BOOT ||
+                keycheckStatus == KEYCHECK_RECOVERY_FOTA);
     }
     else
     {
         // Direct boot to FOTA / Boot Recovery
-        keycheckStatus = KEYCHECK_RECOVERY_FOTA_BOOT;
+        keycheckStatus = KEYCHECK_RECOVERY_FOTA;
     }
 
     // Boot to Recovery
@@ -99,7 +99,7 @@ int main(int argc, char** __attribute__((unused)) argv)
 
         // FOTA Recovery importation
         if (DEV_BLOCK_FOTA_NUM != -1 &&
-                keycheckStatus != KEYCHECK_RECOVERY_BOOT_ONLY)
+                keycheckStatus != KEYCHECK_RECOVERY_BOOT)
         {
             mknod(DEV_BLOCK_FOTA_PATH, S_IFBLK | 0600,
                     makedev(DEV_BLOCK_MAJOR, DEV_BLOCK_FOTA_NUM));
@@ -111,12 +111,9 @@ int main(int argc, char** __attribute__((unused)) argv)
         }
 
         // Recovery ramdisk
-        if (file_exists(SBIN_CPIO_RECOVERY))
-        {
-            const char* argv_ramdiskcpio[] = { EXEC_TOYBOX, "cpio", "-i", "-F",
-                    SBIN_CPIO_RECOVERY, nullptr };
-            system_exec(argv_ramdiskcpio);
-        }
+        const char* argv_ramdiskcpio[] = { EXEC_TOYBOX, "cpio", "-i", "-F",
+                SBIN_CPIO_RECOVERY, nullptr };
+        system_exec(argv_ramdiskcpio);
     }
     // Boot to Android
     else
@@ -126,12 +123,9 @@ int main(int argc, char** __attribute__((unused)) argv)
         init_board.introduce_android();
 
         // Unpack Android ramdisk
-        if (file_exists(SBIN_CPIO_ANDROID))
-        {
-            const char* argv_ramdiskcpio[] = { EXEC_TOYBOX, "cpio", "-i", "-F",
-                    SBIN_CPIO_ANDROID, nullptr };
-            system_exec(argv_ramdiskcpio);
-        }
+        const char* argv_ramdiskcpio[] = { EXEC_TOYBOX, "cpio", "-i", "-F",
+                SBIN_CPIO_ANDROID, nullptr };
+        system_exec(argv_ramdiskcpio);
     }
 
     // Finish init outputs
