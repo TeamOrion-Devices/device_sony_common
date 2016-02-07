@@ -204,11 +204,8 @@ int main(int __attribute__((unused)) argc,
                         return 1;
                     }
                     // TODO: Less hardcoding
-                    if (event.code == KEY_VOLUMEDOWN) {
-                        //fprintf(stderr, "Volume down\n");
-                        return 41;
-                    } else if (event.code == KEY_VOLUMEUP) {
-                        //fprintf(stderr, "Volume up\n");
+                    if (event.code == KEY_VOLUMEDOWN || event.code == KEY_VOLUMEUP) {
+                        //fprintf(stderr, "Volume up or down\n");
                         return 42;
                     }
                     if (event_count && --event_count == 0) {
